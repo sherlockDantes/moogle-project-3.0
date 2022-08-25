@@ -4,7 +4,7 @@ public static class Moogle
     public static SearchResult Query(string query, Dictionary<string, int[]> corpus, Dictionary<string, float[]> TF_IDF_Matrix, float[] powers)
     {
         // Write here content's address
-        string address = @"D:\Work\Businnes\CSharp\Moogle Project\Moogle Project Original 4.0\Content";
+        string address = @"";
 
         string[] fileNames = Directory.GetFiles(address);
 
