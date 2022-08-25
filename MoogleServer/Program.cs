@@ -5,8 +5,9 @@ namespace MoogleServer
 {
     class Program
     {
-        // Content address
-        static string address = @"D:\Work\Businnes\CSharp\Moogle Project\Moogle Project Original 4.0\Content";
+        // Write content's address here
+        static string address = @"";
+        
         static string[] fileNames = Directory.GetFiles(address);
         
         // Sum of square powers of vectors, required to calculate the norm
@@ -15,7 +16,7 @@ namespace MoogleServer
         // Dictionaries
         public static Dictionary<string, int[]> corpus;
         public static Dictionary<string, float[]> TF_IDF_Matrix;
-        
+
         static void Main(string[] args)
         {
             // Loading up Dictionaries
