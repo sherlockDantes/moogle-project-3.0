@@ -31,6 +31,6 @@
     private SearchResult result = new SearchResult();
 
     private void RunQuery() {
-        result = Moogle.Query(query);
+        result = Moogle.Query(query, Program.corpus, Program.TF_IDF_Matrix, Program.powers);
     }
 }

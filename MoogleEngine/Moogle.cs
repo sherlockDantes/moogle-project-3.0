@@ -1,41 +1,22 @@
 ﻿namespace MoogleEngine;
 public static class Moogle
 {
-    public static SearchResult Query(string query)
+    public static SearchResult Query(string query, Dictionary<string, int[]> corpus, Dictionary<string, float[]> TF_IDF_Matrix, float[] powers)
     {
         // Write here content's address
-        string address = @"";
-
-        // Future query.txt address
-        string queryFileName = Path.Combine(address, "query.txt");
-
-        if (File.Exists(queryFileName))
-        {
-            File.Delete(queryFileName);
-        }
-
-        // Creating a file that contains the query
-        StreamWriter queryFile = new StreamWriter(queryFileName);
-
-        queryFile.WriteLine(query);
-
-        queryFile.Close();
+        string address = @"D:\Work\Businnes\CSharp\Moogle Project\Moogle Project Original 4.0\Content";
 
         string[] fileNames = Directory.GetFiles(address);
 
-        // Powers is the sum of tf_idf vectors square powers
-        float[] powers = new float[fileNames.Length];
+        // Reseting dictionaries
+        VectorSpaceModel.ResetSpaceForQuery(corpus, TF_IDF_Matrix, powers);
 
-        int indexOfQuery;
+        // Updating dictionaries
+        VectorSpaceModel.AddQueryToCorpus(query, corpus);
+        VectorSpaceModel.AddQueryToTF_IDF_Matrix(TF_IDF_Matrix, corpus, powers);
 
-        Dictionary<string, int[]> corpus = VectorSpaceModel.GetCorpus(fileNames, out indexOfQuery, queryFileName);
-
-        // Erasing the query file
-        File.Delete(queryFileName);
-
-        Dictionary<string, float[]> TF_IDF_Matrix = VectorSpaceModel.Get_TF_IDF_Matrix(corpus, fileNames, ref powers);
-
-        List<SearchItem> cosineSimilarities = VectorSpaceModel.GetCosineSimilarity(TF_IDF_Matrix, queryFileName, powers, indexOfQuery);
+        // Comparing vectors according to the cosine similarity
+        List<SearchItem> cosineSimilarities = VectorSpaceModel.GetCosineSimilarity(TF_IDF_Matrix,powers);
 
         // SearchItem[] items = new SearchItem[3] {
         //     new SearchItem("Hello World", "Lorem ipsum dolor sit amet", 0.9f),
