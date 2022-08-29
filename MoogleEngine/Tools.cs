@@ -8,6 +8,47 @@ namespace MoogleEngine
         {
             return RemoveAccent(text).Split(" @$/#.-:&+=[]*^~!?(){},''\">_<;%\\".ToCharArray()).Select(word => Regex.Replace(word, "[^a-zA-Z]", "").ToLower()).Where(word => word != "").ToArray();
         }
+
+        public static string[] RemoveRepeatedTerms(string[] terms)
+        {
+            List<string> nonRepeatedTerms = new List<string>();
+
+            for (int i = 0; i < terms.Length; i++)
+            {
+                if (!nonRepeatedTerms.Contains(terms[i]))
+                {
+                    nonRepeatedTerms.Add(terms[i]);
+                }
+            }
+
+            return nonRepeatedTerms.ToArray();
+        }
+        public static void ReplaceAllTerms(string[] terms, Tuple<string, string> pair)
+        {
+            for (int i = 0; i < terms.Length; i++)
+            {
+                if (terms[i] == pair.Item1)
+                {
+                    terms[i] = pair.Item2;
+                }
+            }
+        }
+        public static string GetFinalSuggestion(string[] terms)
+        {
+            string suggestion = "";
+
+            for (int i = 0; i < terms.Length; i++)
+            {
+                if(i == terms.Length - 1)
+                {
+                    suggestion += terms[i];
+                    continue;
+                }
+                suggestion += terms[i] + " ";
+            }
+
+            return suggestion;
+        }
         private static string RemoveAccent(string text)
         {
             string result = text;
@@ -20,39 +61,6 @@ namespace MoogleEngine
             return result;
         }
 
-        // public static string GetSnippet(List<float> tf_idfs_ofQuery, List<string> words, string fileName)
-        // {
-        //     string word = "";
 
-        //     string[] textTerms = Tokenize(File.ReadAllText(fileName));
-
-        //     while(tf_idfs_ofQuery.Count != 0)
-        //     {
-        //         int index = tf_idfs_ofQuery.IndexOf(tf_idfs_ofQuery.Max());
-
-        //         if(textTerms.Contains(words[index]))
-        //         {
-        //             word = words[index];
-        //             break;
-        //         }
-
-        //         tf_idfs_ofQuery.RemoveAt(index);
-        //     }
-
-        //     StreamReader file = new StreamReader(fileName);
-            
-        //     string line = file.ReadLine();
-
-        //     while(line != null)
-        //     {
-        //         if(line.Contains(word))
-        //         {
-        //             break;
-        //         }
-        //         line = file.ReadLine();
-        //     }
-
-        //     return line;
-        // }
     }
 }

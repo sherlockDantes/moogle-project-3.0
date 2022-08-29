@@ -1,6 +1,6 @@
 namespace MoogleEngine
 {
-    public static class VectorSpaceModel
+    public static class FilesVectorSpaceModel
     {
         public static Dictionary<string, int[]> GetCorpus(string[] fileNames)
         {
@@ -41,6 +41,7 @@ namespace MoogleEngine
                 // Getting IDF of each word
                 float IDF = GetIDF(key.Value);
 
+                // Subtracting 1 to key.Value.Length, because that the space we added for future query
                 for (int i = 0; i < key.Value.Length - 1; i++)
                 {
                     // Adding a file if it wasn't there
@@ -87,12 +88,12 @@ namespace MoogleEngine
                 float cosine = GetCosine(key.Value, norm1, TF_IDF_Matrix["query"], norm2);
 
                 // Removing vectors that aren't similar enough
-                if (cosine < 0.006f)
+                if (cosine < 0.006f || cosine.ToString() == "NaN")
                 {
                     count++;
                     continue;
                 }
-
+                
                 searchItems.Add(new SearchItem(Path.GetFileName(key.Key), "", cosine));
 
                 count++;
@@ -139,6 +140,7 @@ namespace MoogleEngine
             {
                 if (corpus.ContainsKey(queryTerms[i]))
                 {
+                    // We're now using the space we saved for query
                     corpus[queryTerms[i]][amountOfFiles - 1]++;
                 }
             }
