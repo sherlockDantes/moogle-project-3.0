@@ -1,35 +1,77 @@
 namespace MoogleEngine
 {
-    public static class FilesVectorSpaceModel
+    public static class VectorSpaceModel
     {
-        public static Dictionary<string, int[]> GetCorpus(string[] fileNames)
+        public static void ProcessingFiles(string[] fileNames, Dictionary<string, int[]> corpus, Dictionary<string, Dictionary<string, List<int>>> positionTracker)
         {
-            Dictionary<string, int[]> corpus = new Dictionary<string, int[]>();
-
             for (int i = 0; i < fileNames.Length; i++)
             {
                 // Cleaning up words
                 string[] words = Tools.Tokenize(File.ReadAllText(fileNames[i]));
 
+                // Initializing positionTracker
+                positionTracker.Add(fileNames[i], new Dictionary<string, List<int>>());
+
                 for (int j = 0; j < words.Length; j++)
                 {
+                    // Working on corpus
                     int[] wordsFrecuency;
                     if (corpus.ContainsKey(words[j]))
                     {
+                        // Updating corpus
                         wordsFrecuency = corpus[words[j]];
                         wordsFrecuency[i]++;
                     }
                     else
                     {
+                        // Initializing word's term frecuency
                         // Adding one more space for query
                         wordsFrecuency = new int[fileNames.Length + 1];
                         wordsFrecuency[i]++;
                         corpus.Add(words[j], wordsFrecuency);
                     }
+
+                    // Working on positionTracker
+                    if (positionTracker[fileNames[i]].ContainsKey(words[j]))
+                    {
+                        // Updating positionTracker
+                        positionTracker[fileNames[i]][words[j]].Add(j);
+                    }
+                    else
+                    {
+                        // Initializing word's positions
+                        List<int> positions = new List<int>();
+                        positions.Add(j);
+                        positionTracker[fileNames[i]].Add(words[j], positions);
+                    }
+                }
+            }
+        }
+
+        public static Dictionary<string, Dictionary<string, string>> GetLineTracker(string[] fileNames)
+        {
+            Dictionary<string, Dictionary<string, string>> lineTracker = new Dictionary<string, Dictionary<string, string>>();
+
+            for (int i = 0; i < fileNames.Length; i++)
+            {
+                lineTracker.Add(fileNames[i], new Dictionary<string, string>());
+
+                string[] lines = File.ReadAllLines(fileNames[i]);
+
+                for (int j = 0; j < lines.Length; j++)
+                {
+                    string[] words = Tools.Tokenize(lines[j]);
+                    for (int k = 0; k < words.Length; k++)
+                    {
+                        if (!lineTracker[fileNames[i]].ContainsKey(words[k]))
+                        {
+                            lineTracker[fileNames[i]].Add(words[k], lines[j]);
+                        }
+                    }
                 }
             }
 
-            return corpus;
+            return lineTracker;
         }
         public static Dictionary<string, float[]> Get_TF_IDF_Matrix(Dictionary<string, int[]> corpus, string[] fileNames, float[] powers)
         {
@@ -88,18 +130,16 @@ namespace MoogleEngine
                 float cosine = GetCosine(key.Value, norm1, TF_IDF_Matrix["query"], norm2);
 
                 // Removing vectors that aren't similar enough
-                if (cosine < 0.006f || cosine.ToString() == "NaN")
+                if (cosine.ToString() == "NaN" || cosine == 0)
                 {
                     count++;
                     continue;
                 }
-                
-                searchItems.Add(new SearchItem(Path.GetFileName(key.Key), "", cosine));
+
+                searchItems.Add(new SearchItem(key.Key, "", cosine));
 
                 count++;
             }
-
-            searchItems.Sort();
 
             return searchItems;
         }

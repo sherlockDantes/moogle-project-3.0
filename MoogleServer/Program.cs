@@ -6,37 +6,32 @@ namespace MoogleServer
     class Program
     {
         // Write here content's address
-        static string address = @"";
-
+        static string address = @"../Content";
         static string[] fileNames = Directory.GetFiles(address);
 
         // Sum of powers of each file vectors, required to calculate the norm. Adding one for future query
         public static float[] powers = new float[fileNames.Length + 1];
-        
+
         // Dictionaries of files according to the Vector Space Model(VSM)
-        public static Dictionary<string, int[]> corpus;
+        public static Dictionary<string, int[]> corpus = new Dictionary<string, int[]>();
         public static Dictionary<string, float[]> TF_IDF_Matrix;
 
-        // Sum of powers of each word vector, required to calculate norm too
-        public static float[] charPowers;
+        // Position tracker dictionary
+        public static Dictionary<string, Dictionary<string, List<int>>> positionTracker = new Dictionary<string, Dictionary<string, List<int>>>();
 
-        // Dictionaries of words according to the VSM
-        public static Dictionary<char, int[]> characterCorpus;
-        public static Dictionary<string, float[]> words_TF_IDF_Matrix;
+        // Line tracker dictionary
+        public static Dictionary<string, Dictionary<string, string>> lineTracker;
         static void Main(string[] args)
         {
+            //** Loading up data
             // Loading up files as vectors dictionaries
-            corpus = MoogleEngine.FilesVectorSpaceModel.GetCorpus(fileNames);
-            TF_IDF_Matrix = MoogleEngine.FilesVectorSpaceModel.Get_TF_IDF_Matrix(corpus, fileNames, powers);
+            MoogleEngine.VectorSpaceModel.ProcessingFiles(fileNames, corpus, positionTracker);
+            TF_IDF_Matrix = MoogleEngine.VectorSpaceModel.Get_TF_IDF_Matrix(corpus, fileNames, powers);
 
-            // Updating charPowers. Adding one for possible unknown word
-            charPowers = new float[corpus.Count + 1];
+            // Loading up lineTracker
+            lineTracker = MoogleEngine.VectorSpaceModel.GetLineTracker(fileNames);
 
-            // Loading up words as vectors dictionaries
-            characterCorpus = MoogleEngine.WordsVectorSpaceModel.GetCharacterCorpus(corpus);
-            words_TF_IDF_Matrix = MoogleEngine.WordsVectorSpaceModel.Get_Words_TF_IDF_Matrix(characterCorpus, corpus, charPowers);
-            
-
+            //** Loading up server
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
@@ -50,7 +45,6 @@ namespace MoogleServer
             {
                 app.UseExceptionHandler("/Error");
             }
-
 
             app.UseStaticFiles();
 

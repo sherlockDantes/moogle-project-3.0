@@ -2,35 +2,66 @@
 
 <PageTitle>Moogle!</PageTitle>
 
-<h1>🔍 Moogle!</h1>
-
-<input class="p-1 my-4" @bind="query" placeholder="Introduzca su búsqueda">
-
-<button type="default" class="btn btn-primary" @onclick="RunQuery">🔍 Buscar</button>
-
-@if (!string.IsNullOrEmpty(result.Suggestion)) {
-    <div class="suggestion">
-        <p>¿Quisite decir <strong><a href="#">@result.Suggestion</a></strong>?</p>
+<div class="container">
+    <div class="header">
+        <h1>Moogle!</h1>
     </div>
-}
 
-<ul class="results">
-@foreach (var item in result.Items()) {
-    <li>
-        <div class="item">
-            <p class="title">@item.Title</p>
-            <p>... @item.Snippet ...</p>
-            <p>@item.Score</p>
-        </div>
-    </li>
-}
-</ul>
+    <div class="inputs">
+        <input @bind="query" class="inputs-search-input" placeholder="Introduzca su búsqueda">
+
+        <button type="default" class="inputs-search-button" @onclick="RunQuery">🔍</button>
+    </div>
+
+    <div class="outputs">
+        @if (!string.IsNullOrEmpty(result.Suggestion))
+        {
+            <div class="outputs-suggestion">
+                <p>¿Quisite decir <strong><a href="#" @onclick="RunSuggestion">@result.Suggestion</a></strong>?</p>
+            </div>
+        }
+
+        <ul class="outputs-results">
+            @if (result.Count != 0)
+            {
+                @foreach (var item in result.Items())
+                {
+                    <li>
+                        <div class="item">
+                            <p id="title">@Path.GetFileName(item.Title)</p>
+                            <p id="snippet">... @((MarkupString)item.Snippet) ...</p>
+                            <p id="score">@item.Score</p>
+                        </div>
+                    </li>
+                }
+            }
+            else
+            {
+                @if (searchDone)
+                {
+                    <div class="no-results">
+                        <p>Lo sentimos, no hemos encontrado resultados</p>
+                    </div>
+                }
+            }
+        </ul>
+    </div>
+</div>
 
 @code {
     private string query = "";
     private SearchResult result = new SearchResult();
 
-    private void RunQuery() {
-        result = Moogle.Query(query, Program.corpus, Program.TF_IDF_Matrix, Program.powers, Program.characterCorpus, Program.words_TF_IDF_Matrix, Program.charPowers);
+    private bool searchDone = false;
+    private void RunQuery()
+    {
+        result = Moogle.Query(query, Program.corpus, Program.TF_IDF_Matrix, Program.powers, Program.positionTracker, Program.lineTracker);
+
+        searchDone = true;
+    }
+    private void RunSuggestion()
+    {
+        query = result.Suggestion;
+        result = Moogle.Query(query, Program.corpus, Program.TF_IDF_Matrix, Program.powers, Program.positionTracker, Program.lineTracker);
     }
 }

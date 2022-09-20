@@ -11,9 +11,9 @@ public class SearchItem : IComparable<SearchItem>
 
     public string Title { get; private set; }
 
-    public string Snippet { get; private set; }
+    public string Snippet { get; set; }
 
-    public float Score { get; private set; }
+    public float Score { get; set; }
 
     public int CompareTo(SearchItem other)
     {
