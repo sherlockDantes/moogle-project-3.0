@@ -24,7 +24,7 @@ private static int GetLevenshteinDistance(string word1, string word2)
 }
 ```
 
-`GetLevenshteinDistance` es un método recursivo que simplemente determina cuantas ediciones deben realizarse para transformar una palabra en la otra.
+`GetLevenshteinDistance` es un método recursivo que simplemente determina cuántas ediciones deben realizarse para transformar una palabra en la otra.
 
 ## Bibliografía
 

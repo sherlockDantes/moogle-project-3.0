@@ -2,7 +2,7 @@
 
 > Informe del Proyecto de Programación I.
 > Facultad de Matemática y Computación - Universidad de La Habana.
-> Cursos 2022, 2023.
+> Cursos 2022 - 2023.
 > Estudiante: Javier Lima García
 
 Moogle! es una aplicación cuyo propósito es buscar inteligentemente un texto en un conjunto de documentos.

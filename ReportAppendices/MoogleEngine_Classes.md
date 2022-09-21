@@ -2,7 +2,7 @@
 
 ## 1- VectorSpaceModel.cs
 
-La clase estática `VectorSpaceModel` es la encargada de procesar los documentos para aplicar sobre estos el [*Modelo de Espacio Vectorial*](VectorSpaceModel.md).
+La clase estática `VectorSpaceModel` es la encargada de procesar los documentos para aplicar sobre estos el ["Modelo de Espacio Vectorial"](VectorSpaceModel.md).
 
 ### 1.1- ProcessingFiles()
 
@@ -34,7 +34,7 @@ Actualiza el diccionario *corpus* de acuerdo a las palabras presentes en la quer
 
 ### 1.7- AddQueryToTF_IDF_Matrix()
 
-Actualiza diccionario *TF_IDF_Matrix* y el array *powers* de acuerdo al corpus, que se supone, ha sido previamente actualizado.
+Actualiza diccionario *TF_IDF_Matrix* y el array *powers* de acuerdo al corpus, que ,se supone, ha sido previamente actualizado.
 
 ### 1.8- GetCosine()
 
@@ -80,9 +80,9 @@ La clase estática `SnippetManager` es la encargada de manejar todo lo relaciona
 
 Este método responde en base a los operadores:
 - Si está presente el operador "^", la palabra bajo su influencia aparecerá en el snippet.
-- Si está presente el operador "*" y la palabra bajo su influencia está en el documento aparecerá en el snippet.
-- Si está presente el operador "~" y las palabras bajo su influencia está en el documento aparecerán el snippet.
-- Si ninguno de estos casos se cumple las palabras de la query que aparezcan en el documento, aparecerán en el snippet.
+- Si está presente el operador "*" y la palabra bajo su influencia está en el documento, entonces esta aparecerá en el snippet.
+- Si está presente el operador "~" y las palabras bajo su influencia está en el documento, entonces estas aparecerán el snippet.
+- Si ninguno de estos casos se cumple, las palabras de la query que aparezcan en el documento, aparecerán en el snippet.
 
 Hay que tener en cuenta que las líneas donde aparecen las palabras de cada documento están almacenadas en el diccionario *lineTracker*. Razón por la cual es un argumento de este método.
 
@@ -132,15 +132,15 @@ El tipo `SearchResult` recibe en su constructor dos argumentos: `items` y `sugge
 
 ## 7- ClosenessData.cs
 
-El tipo `ClosenessData` recibe en su constructor dos argumentos: `fileName` y `closeness`. El parámetro `fileName` es un string que representa el nombre de un documento. El parámetro closeness es un int que representa la menor distancia que presentan dos determinadas palabras en es documento.
+El tipo `ClosenessData` recibe en su constructor dos argumentos: `fileName` y `closeness`. El parámetro `fileName` es un *string* que representa el nombre de un documento. El parámetro closeness es un *int* que representa la menor distancia que presentan dos determinadas palabras en es documento.
 
 Utilizando la herencia se convirtió a *ClosenessData* en un `IComparable<ClosenessData>`, con la respectiva adición del método:
 
 ```cs
-public int CompareTo(SearchItem other)
+public int CompareTo(ClosenessData other)
 {
-    if (Score < other.Score) return 1;
-    else if (Score > other.Score) return -1;
+    if (Closeness < other.Closeness) return 1;
+    else if (Closeness > other.Closeness) return -1;
     else return 0;
 }
 ```
@@ -164,7 +164,7 @@ Elimina los acentos.
 
 ### 8.4- ReplaceAllTerms()
 
-Remplaza los términos desconocidos por las sugerencias.
+Reemplaza los términos desconocidos por las sugerencias.
 
 ### 8.5- GetFinalSuggestion()
 
