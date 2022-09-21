@@ -22,7 +22,6 @@ Donde *d2 * q* es la intersección (conocida es como producto del punto) del doc
 
 ![](Images\norm_formula.jpg)
 
-
 Usando el coseno, la similitud entre el documento dj y la consulta q se puede calcular como:
 
 ![](Images/general_cosine_formula.jpg)
